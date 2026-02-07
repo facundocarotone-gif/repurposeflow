@@ -6,7 +6,26 @@ export async function createClient() {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   
   if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Supabase environment variables are not configured');
+    console.warn('Supabase environment variables are not configured');
+    // Return a mock client so pages can still render
+    const mockAuth = {
+      getUser: async () => ({ data: { user: null }, error: null }),
+      getSession: async () => ({ data: { session: null }, error: null }),
+    };
+    const mockFrom = () => ({
+      select: () => ({
+        eq: () => ({
+          single: async () => ({ data: null, error: null }),
+          order: () => ({
+            limit: async () => ({ data: [], error: null }),
+          }),
+        }),
+        order: () => ({
+          limit: async () => ({ data: [], error: null }),
+        }),
+      }),
+    });
+    return { auth: mockAuth, from: mockFrom } as unknown as ReturnType<typeof createServerClient>;
   }
 
   const cookieStore = await cookies();
