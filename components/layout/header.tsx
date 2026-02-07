@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
@@ -11,10 +10,15 @@ interface HeaderProps {
 
 export function Header({ user }: HeaderProps) {
   const router = useRouter();
-  const supabase = createClient();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      const { createClient } = await import('@/lib/supabase/client');
+      const supabase = createClient();
+      await supabase.auth.signOut();
+    } catch (e) {
+      console.warn('Logout error:', e);
+    }
     router.push('/');
     router.refresh();
   };
