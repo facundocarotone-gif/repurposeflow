@@ -1,6 +1,7 @@
 import { cn } from '@/lib/utils';
 import { HTMLAttributes, forwardRef } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface CardProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
